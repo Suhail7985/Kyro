@@ -115,8 +115,8 @@ function isInternalUser(role) {
 function userHasRole(user, allowedRoles) {
   const role = normalizeRole(user?.role);
   const expanded = allowedRoles.flatMap((r) => {
-    if (r === ROLES.APPLICANT) return [ROLES.APPLICANT, 'candidate'];
-    if (r === ROLES.HR_RECRUITER) return [ROLES.HR_RECRUITER, 'recruiter'];
+    if (r === ROLES.APPLICANT || r === 'candidate') return [ROLES.APPLICANT, 'candidate'];
+    if (r === ROLES.HR_RECRUITER || r === 'recruiter') return [ROLES.HR_RECRUITER, 'recruiter'];
     return [r];
   });
   return expanded.includes(role);

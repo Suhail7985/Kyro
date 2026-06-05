@@ -48,6 +48,11 @@ export const applicantsAuthAPI = {
   updateProfile: (data) => api.put('/api/applicants/auth/profile', data),
 };
 
+export const publicAPI = {
+  browseJobs: (params) => axios.get(`${import.meta.env.VITE_API_URL || ''}/api/recruitment/jobs`, { params }),
+  getJobDetails: (id) => axios.get(`${import.meta.env.VITE_API_URL || ''}/api/recruitment/jobs/${id}`),
+};
+
 export const jobsAPI = {
   list: (params) => {
     const userType = localStorage.getItem('userType');
@@ -184,8 +189,8 @@ export const hrAPI = {
   createPerformance: (data) => api.post('/api/hr/performance', data),  leaves: () => api.get('/api/hr/leaves'),
   applyLeave: (data) => api.post('/api/hr/leaves', data),
   pendingLeaves: () => api.get('/api/hr/leaves/pending'),
-  approveLeave: (id) => api.put(`/api/hr/leaves/${id}/approve`),
-  rejectLeave: (id) => api.put(`/api/hr/leaves/${id}/reject`),};
+  approveLeave: (id, data) => api.put(`/api/hr/leaves/${id}/approve`, data),
+  rejectLeave: (id, data) => api.put(`/api/hr/leaves/${id}/reject`, data),};
 
 export const aiAPI = {
   chat: (message) => api.post('/api/ai/chat', { message }),

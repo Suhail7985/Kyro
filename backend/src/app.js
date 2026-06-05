@@ -1,5 +1,6 @@
 require('dotenv').config();
 const express = require('express');
+const http = require('http');
 const mongoose = require('mongoose');
 const cors = require('cors');
 const helmet = require('helmet');
@@ -19,7 +20,12 @@ const hrRoutes = require('./routes/hrRoutes');
 const aiRoutes = require('./routes/aiRoutes');
 const mediaRoutes = require('./routes/mediaRoutes');
 const cookieParser = require('cookie-parser');
+const { initSocket } = require('./utils/socket');
+const { initRedis } = require('./utils/redisClient');
 const app = express();
+const server = http.createServer(app);
+const io = initSocket(server);
+initRedis();
 const PORT = process.env.PORT || 5000;
 
 app.use(helmet({ crossOriginResourcePolicy: { policy: 'cross-origin' } }));
@@ -39,6 +45,12 @@ const limiter = rateLimit({
   message: { message: 'Too many requests, please try again later' },
 });
 app.use('/api/', limiter);
+
+// Inject socket.io instance into req
+app.use((req, res, next) => {
+  req.io = io;
+  next();
+});
 
 app.use('/uploads', express.static(path.join(__dirname, '../uploads')));
 
@@ -93,7 +105,7 @@ mongoose
   .then(async () => {
     console.log('MongoDB connected');
     await runSeeds();
-    const server = app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+    server.listen(PORT, () => console.log(`Server running on port ${PORT}`));
     server.on('error', (err) => {
       if (err.code === 'EADDRINUSE') {
         console.error(`Port ${PORT} is already in use. Please stop the other process or change the PORT value.`);

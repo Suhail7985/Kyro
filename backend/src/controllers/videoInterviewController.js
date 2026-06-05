@@ -127,7 +127,6 @@ async function uploadInterviewVideo(req, res) {
     application.interviewVideos.push(videoEntry);
 
     // Automatically advance candidate status on upload
-    const job = await Job.findById(application.jobId);
     const totalQuestions = job?.interviewQuestions?.length || 3;
 
     if (application.interviewVideos.length >= totalQuestions) {

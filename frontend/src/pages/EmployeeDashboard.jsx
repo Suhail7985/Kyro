@@ -3,7 +3,7 @@ import { useAuth } from '../hooks/useAuth';
 import Layout from '../components/Layout';
 import StatCard from '../components/StatCard';
 import AIChatBot from '../components/AIChatBot';
-import { hrAPI, usersAPI } from '../services/api';
+import { hrAPI, usersAPI, authAPI } from '../services/api';
 
 export default function EmployeeDashboard() {
   const { user, setUser } = useAuth();

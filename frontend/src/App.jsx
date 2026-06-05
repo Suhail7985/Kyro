@@ -14,6 +14,8 @@ import SeniorManagerDashboard from './pages/SeniorManagerDashboard';
 import VideoInterview from './pages/VideoInterview';
 import CandidateDashboard from './pages/CandidateDashboard';
 import AccessDenied from './pages/AccessDenied';
+import CareersList from './pages/CareersList';
+import CareersDetail from './pages/CareersDetail';
 
 function HomeRedirect() {
   const { user, loading } = useAuth();
@@ -31,6 +33,8 @@ export default function App() {
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
           <Route path="/verify-email" element={<VerifyEmail />} />
+          <Route path="/careers" element={<CareersList />} />
+          <Route path="/careers/:id" element={<CareersDetail />} />
           <Route path="/candidate" element={<Navigate to="/dashboard/candidate" replace />} />
           <Route
             path="/onboarding"

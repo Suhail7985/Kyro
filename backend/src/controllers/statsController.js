@@ -2,9 +2,20 @@ const Application = require('../models/Application');
 const Job = require('../models/Job');
 const User = require('../models/User');
 const Payroll = require('../models/Payroll');
+const { getRedisClient } = require('../utils/redisClient');
 
 async function getStatistics(req, res) {
   try {
+    const redisClient = getRedisClient();
+    const cacheKey = 'stats:dashboard';
+
+    if (redisClient) {
+      const cachedStats = await redisClient.get(cacheKey);
+      if (cachedStats) {
+        return res.json({ ...JSON.parse(cachedStats), cached: true });
+      }
+    }
+
     const [totalUsers, totalJobs, totalApplications, applications, employeeCount, payrollAgg] =
       await Promise.all([
         User.countDocuments(),
@@ -45,7 +56,7 @@ async function getStatistics(req, res) {
       { $group: { _id: '$department', count: { $sum: 1 } } },
     ]);
 
-    res.json({
+    const statsData = {
       totalUsers,
       totalJobs,
       totalApplications,
@@ -62,7 +73,13 @@ async function getStatistics(req, res) {
         medium: scores.filter((s) => s >= 40 && s < 70).length,
         low: scores.filter((s) => s < 40).length,
       },
-    });
+    };
+
+    if (redisClient) {
+      await redisClient.setEx(cacheKey, 300, JSON.stringify(statsData)); // Cache for 5 mins
+    }
+
+    res.json(statsData);
   } catch (err) {
     res.status(500).json({ message: err.message });
   }

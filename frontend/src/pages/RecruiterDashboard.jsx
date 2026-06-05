@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import Layout from '../components/Layout';
 import AIChatBot from '../components/AIChatBot';
+import ApplicantKanbanBoard from '../components/ApplicantKanbanBoard';
 import { jobsAPI, applicationsAPI, mediaUrl } from '../services/api';
 
 export default function RecruiterDashboard() {
@@ -360,124 +361,27 @@ export default function RecruiterDashboard() {
       )}
 
       {tab === 'applicants' && (
-        <div className="card overflow-hidden">
-          <div className="p-4 border-b bg-slate-50 flex justify-between items-center">
-            <h2 className="font-semibold">Candidate Pipeline</h2>
-            <p className="text-xs text-slate-500">Ranked by AI Match Score</p>
+        <div className="card overflow-hidden p-6">
+          <div className="flex justify-between items-center mb-6">
+            <div>
+              <h2 className="font-semibold text-lg text-slate-900">Candidate Pipeline</h2>
+              <p className="text-sm text-slate-500">Drag and drop candidates across pipeline stages.</p>
+            </div>
+            {applications.length > 0 && (
+              <span className="px-3 py-1 bg-brand-50 text-brand-700 rounded-full text-xs font-bold">
+                {applications.length} Total Applicants
+              </span>
+            )}
           </div>
-
-          <div className="overflow-x-auto">
-            <table className="w-full text-sm">
-              <thead className="bg-slate-50">
-                <tr>
-                  <th className="p-3 text-left">Candidate Name & Contact</th>
-                  <th className="p-3 text-left">AI Match Score</th>
-                  <th className="p-3 text-left">Pipeline Status</th>
-                  <th className="p-3 text-left">Resume</th>
-                  <th className="p-3 text-left">Interview Videos</th>
-                  <th className="p-3 text-left">AI Feedback / Missing Skills</th>
-                  <th className="p-3 text-left">Change Status</th>
-                </tr>
-              </thead>
-              <tbody>
-                {applications.map((app) => (
-                  <tr key={app._id} className="border-t">
-                    <td className="p-3">
-                      <p className="font-semibold text-slate-900">{app.extractedName || app.userId?.name}</p>
-                      <p className="text-xs text-slate-500">{app.extractedEmail || app.userId?.email}</p>
-                      <p className="text-xs text-slate-400 mt-0.5">{app.applicantId?.phone || 'No Phone'}</p>
-                    </td>
-                    <td className="p-3">
-                      <span className={`px-2 py-1 rounded-full text-xs font-bold ${
-                        app.score >= 70 ? 'bg-emerald-100 text-emerald-800' : app.score >= 40 ? 'bg-amber-100 text-amber-800' : 'bg-rose-100 text-rose-800'
-                      }`}>
-                        {app.score}%
-                      </span>
-                    </td>
-                    <td className="p-3">
-                      <span className={`px-2.5 py-1 rounded-full text-xs uppercase tracking-wider font-semibold border ${
-                        app.status === 'selected'
-                          ? 'bg-emerald-50 text-emerald-700 border-emerald-100'
-                          : app.status === 'rejected'
-                          ? 'bg-rose-50 text-rose-700 border-rose-100'
-                          : 'bg-blue-50 text-blue-700 border-blue-100'
-                      }`}>
-                        {app.status}
-                      </span>
-                    </td>
-                    <td className="p-3">
-                      {app.resumeUrl ? (
-                        <a
-                          href={mediaUrl(app.resumeUrl)}
-                          target="_blank"
-                          rel="noreferrer"
-                          className="text-brand-600 font-semibold hover:underline"
-                        >
-                          View Resume
-                        </a>
-                      ) : (
-                        <span className="text-slate-400">No Resume</span>
-                      )}
-                    </td>
-                    <td className="p-3">
-                      {app.interviewVideos && app.interviewVideos.length > 0 ? (
-                        <div className="flex flex-col gap-1.5">
-                          <span className="px-2 py-0.5 bg-violet-100 text-violet-800 rounded-full text-[11px] font-bold w-max">
-                            🎥 {app.interviewVideos.length} Video(s)
-                          </span>
-                          <div className="flex flex-col gap-1">
-                            {app.interviewVideos.map((vid, idx) => (
-                              <button
-                                key={vid._id || idx}
-                                onClick={() => {
-                                  setActiveVideoUrl(mediaUrl(vid.videoUrl));
-                                  setActiveVideoTitle(`${app.extractedName || app.userId?.name} — Q${idx + 1}`);
-                                }}
-                                className="text-[11px] text-brand-600 hover:underline font-semibold text-left"
-                                title={`Play Answer ${idx + 1}`}
-                              >
-                                Play Answer {idx + 1}
-                              </button>
-                            ))}
-                          </div>
-                        </div>
-                      ) : (
-                        <span className="text-slate-400 text-xs">No videos</span>
-                      )}
-                    </td>
-                    <td className="p-3 max-w-xs">
-                      <p className="text-xs text-slate-600 line-clamp-2" title={app.aiFeedback}>{app.aiFeedback || '—'}</p>
-                      {app.missingSkills?.length > 0 && (
-                        <p className="text-xs text-rose-600 mt-1">
-                          Missing: {app.missingSkills.join(', ')}
-                        </p>
-                      )}
-                    </td>
-                    <td className="p-3">
-                      <select
-                        value={app.status}
-                        onChange={(e) => handleStatusChange(app._id, e.target.value)}
-                        className="input-field py-1 px-2 text-xs"
-                      >
-                        {pipelineStatuses.map((st) => (
-                          <option key={st} value={st}>
-                            {st.replace('_', ' ').toUpperCase()}
-                          </option>
-                        ))}
-                      </select>
-                    </td>
-                  </tr>
-                ))}
-                {!applications.length && (
-                  <tr>
-                    <td colSpan="7" className="p-6 text-center text-slate-500">
-                      No candidates have applied for this job yet.
-                    </td>
-                  </tr>
-                )}
-              </tbody>
-            </table>
-          </div>
+          
+          <ApplicantKanbanBoard 
+            applications={applications} 
+            onStatusChange={handleStatusChange}
+            onPlayVideo={(url, title) => {
+              setActiveVideoUrl(mediaUrl(url));
+              setActiveVideoTitle(title);
+            }}
+          />
         </div>
       )}
 

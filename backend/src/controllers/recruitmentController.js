@@ -366,6 +366,13 @@ async function updateApplicationStatus(req, res) {
     await application.save();
     notifyStatusChange(application);
 
+    if (req.io && application.jobId) {
+      req.io.to(application.jobId.toString()).emit('job_application_updated', {
+        applicationId: application._id,
+        status: targetStatus,
+      });
+    }
+
     res.json({
       message: 'Application status updated',
       application: mapApplicationForFrontend(application),
