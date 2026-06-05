@@ -1,14 +1,18 @@
-/** Role helpers – supports exact enterprise HRMS roles and legacy mapping for compatibility */
+/** Role helpers – supports enterprise HRMS roles with internal/external user separation */
 
 const ROLES = {
   MANAGEMENT_ADMIN: 'admin',
   SENIOR_MANAGER: 'senior_manager',
   HR_RECRUITER: 'hr_recruiter',
   EMPLOYEE: 'employee',
+  APPLICANT: 'applicant',
 };
 
+const EXTERNAL_ROLES = [ROLES.APPLICANT];
+const INTERNAL_ROLES = [ROLES.MANAGEMENT_ADMIN, ROLES.SENIOR_MANAGER, ROLES.HR_RECRUITER, ROLES.EMPLOYEE];
+
 const LEGACY_MAP = {
-  candidate: ROLES.EMPLOYEE,
+  candidate: ROLES.APPLICANT,
   recruiter: ROLES.HR_RECRUITER,
 };
 
@@ -32,6 +36,10 @@ const ROLE_PERMISSIONS = {
     'view_all_attendance',
     'view_all_leave',
     'view_all_payroll',
+    'view_all_applicants',
+    'convert_applicant_to_employee',
+    'manage_jobs',
+    'manage_applicants',
   ],
   [ROLES.SENIOR_MANAGER]: [
     'view_team_members',
@@ -43,20 +51,23 @@ const ROLE_PERMISSIONS = {
     'generate_team_reports',
     'use_ai_performance_review',
     'view_team_analytics',
+    'review_applicants',
+    'view_hiring_pipeline',
+    'add_hiring_feedback',
   ],
   [ROLES.HR_RECRUITER]: [
     'create_jobs',
     'edit_jobs',
     'delete_jobs',
-    'view_candidates',
+    'view_applicants',
     'screen_resumes',
     'use_ai_resume_screening',
-    'use_candidate_ranking',
-    'generate_interview_questions',
-    'schedule_interviews',
-    'shortlist_candidates',
-    'reject_candidates',
+    'view_interview_videos',
+    'shortlist_applicants',
+    'reject_applicants',
     'generate_hiring_reports',
+    'view_hiring_pipeline',
+    'add_recruiter_feedback',
   ],
   [ROLES.EMPLOYEE]: [
     'clock_in',
@@ -70,6 +81,19 @@ const ROLE_PERMISSIONS = {
     'upload_documents',
     'use_career_assistant',
   ],
+  [ROLES.APPLICANT]: [
+    'view_jobs',
+    'search_jobs',
+    'filter_jobs',
+    'apply_jobs',
+    'upload_resume',
+    'view_applications',
+    'view_application_status',
+    'record_video_interview',
+    'view_match_score',
+    'save_jobs',
+    'update_profile',
+  ],
 };
 
 const HR_ROLES = Object.values(ROLES);
@@ -80,10 +104,18 @@ function normalizeRole(role) {
   return LEGACY_MAP[role] || role;
 }
 
+function isExternalUser(role) {
+  return EXTERNAL_ROLES.includes(normalizeRole(role));
+}
+
+function isInternalUser(role) {
+  return INTERNAL_ROLES.includes(normalizeRole(role));
+}
+
 function userHasRole(user, allowedRoles) {
   const role = normalizeRole(user?.role);
   const expanded = allowedRoles.flatMap((r) => {
-    if (r === ROLES.EMPLOYEE) return [ROLES.EMPLOYEE, 'candidate'];
+    if (r === ROLES.APPLICANT) return [ROLES.APPLICANT, 'candidate'];
     if (r === ROLES.HR_RECRUITER) return [ROLES.HR_RECRUITER, 'recruiter'];
     return [r];
   });
@@ -107,8 +139,12 @@ module.exports = {
   normalizeRole,
   userHasRole,
   userHasPermission,
+  isExternalUser,
+  isInternalUser,
   HR_ROLES,
   MANAGEMENT,
   HR_STAFF,
   LEGACY_MAP,
+  EXTERNAL_ROLES,
+  INTERNAL_ROLES,
 };

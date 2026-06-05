@@ -3,7 +3,7 @@ const { generateInterviewQuestions } = require('../services/aiInterview');
 
 async function createJob(req, res) {
   try {
-    const { title, description, requiredSkills, location, salary } = req.body;
+    const { title, description, requiredSkills, location, salary, department, employmentType, experienceRequired, workType, status } = req.body;
     if (!title || !description) {
       return res.status(400).json({ message: 'Title and description are required' });
     }
@@ -13,6 +13,11 @@ async function createJob(req, res) {
       requiredSkills: requiredSkills || [],
       location,
       salary,
+      department,
+      employmentType,
+      experienceRequired,
+      workType,
+      status: status || 'open',
       createdBy: req.user._id,
     });
     res.status(201).json(job);
@@ -24,11 +29,11 @@ async function createJob(req, res) {
 async function listJobs(req, res) {
   try {
     const filter = {};
-    if (req.query.createdBy === 'me' && ['recruiter', 'admin'].includes(req.user.role)) {
+    if (req.query.createdBy === 'me' && ['hr_recruiter', 'admin'].includes(req.user.role)) {
       filter.createdBy = req.user._id;
     }
     if (req.query.status) filter.status = req.query.status;
-    else if (['candidate', 'employee'].includes(req.user.role)) filter.status = 'open';
+    else if (['applicant', 'employee'].includes(req.user.role)) filter.status = 'open';
 
     const jobs = await Job.find(filter)
       .populate('createdBy', 'name email')
@@ -83,6 +88,8 @@ async function generateQuestions(req, res) {
     const job = await Job.findById(req.params.id);
     if (!job) return res.status(404).json({ message: 'Job not found' });
     const questions = await generateInterviewQuestions(job);
+    job.interviewQuestions = questions;
+    await job.save();
     res.json({ questions });
   } catch (err) {
     res.status(500).json({ message: err.message });

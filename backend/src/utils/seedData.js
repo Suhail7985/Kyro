@@ -54,6 +54,7 @@ async function upsertUser({ email, password, name, role, extra = {} }) {
       email,
       passwordHash: await bcrypt.hash(password, 12),
       role,
+      isEmailVerified: true,
       profile: { onboardingComplete: true, skills: extra.skills || [] },
       ...extra,
     });
@@ -119,7 +120,7 @@ async function seedSampleJobs() {
 }
 
 async function seedPayrollAndAttendance() {
-  const employees = await User.find({ role: { $in: ['employee', 'candidate'] }, salary: { $gt: 0 } });
+  const employees = await User.find({ role: 'employee', salary: { $gt: 0 } });
   const month = new Date().toISOString().slice(0, 7);
 
   for (const emp of employees) {
@@ -160,6 +161,9 @@ async function seedPayrollAndAttendance() {
 }
 
 async function runAllSeeds() {
+  // Fix any old roles to match updated enum
+  await User.updateMany({ role: 'recruiter' }, { role: 'hr_recruiter' });
+
   await ensureDemoRecruiter();
   await seedHrUsers();
   await seedSampleJobs();

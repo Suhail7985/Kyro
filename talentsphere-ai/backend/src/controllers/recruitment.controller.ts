@@ -196,3 +196,23 @@ export async function uploadVideo(req: AuthRequest, res: Response) {
   );
   res.json({ success: true, data: app });
 }
+
+export async function myApplications(req: AuthRequest, res: Response) {
+  const apps = await Application.find({ userId: req.user!._id })
+    .sort({ createdAt: -1 })
+    .populate('jobId', 'title description location experienceLevel requiredSkills');
+  res.json({ success: true, data: apps });
+}
+
+export async function myInterviews(req: AuthRequest, res: Response) {
+  // First find the candidate associated with this user
+  const candidate = await Candidate.findOne({ email: req.user!.email });
+  if (!candidate) {
+    res.json({ success: true, data: [] });
+    return;
+  }
+  const interviews = await Interview.find({ candidateId: candidate._id })
+    .sort({ scheduledAt: 1 })
+    .populate('jobId', 'title');
+  res.json({ success: true, data: interviews });
+}

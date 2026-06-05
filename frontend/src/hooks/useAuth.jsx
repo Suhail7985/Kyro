@@ -1,5 +1,5 @@
 import { createContext, useContext, useState, useEffect, useCallback } from 'react';
-import { authAPI } from '../services/api';
+import { authAPI, applicantsAuthAPI } from '../services/api';
 
 const AuthContext = createContext(null);
 
@@ -13,6 +13,7 @@ export function AuthProvider({ children }) {
   const logout = useCallback(() => {
     localStorage.removeItem('token');
     localStorage.removeItem('user');
+    localStorage.removeItem('userType');
     setUser(null);
   }, []);
 
@@ -24,15 +25,22 @@ export function AuthProvider({ children }) {
 
   useEffect(() => {
     const token = localStorage.getItem('token');
+    const userType = localStorage.getItem('userType');
     if (!token) {
       setLoading(false);
       return;
     }
-    authAPI
-      .me()
+
+    const fetchProfile = userType === 'applicant'
+      ? applicantsAuthAPI.me()
+      : authAPI.me();
+
+    fetchProfile
       .then((res) => {
-        setUser(res.data.user);
-        localStorage.setItem('user', JSON.stringify(res.data.user));
+        const rawData = res.data.user || res.data.applicant;
+        const userData = userType === 'applicant' ? { ...rawData, role: 'applicant' } : rawData;
+        setUser(userData);
+        localStorage.setItem('user', JSON.stringify(userData));
       })
       .catch(() => logout())
       .finally(() => setLoading(false));

@@ -25,7 +25,7 @@ export default function VideoInterview() {
     try {
       await applicationsAPI.uploadVideo(appId, videoFile);
       setMessage('Video interview uploaded successfully!');
-      setTimeout(() => navigate('/employee'), 1500);
+      setTimeout(() => navigate('/dashboard/candidate'), 1500);
     } catch (err) {
       setMessage(err.response?.data?.message || 'Upload failed');
     } finally {

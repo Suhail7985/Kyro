@@ -14,6 +14,17 @@ const attendanceSchema = new mongoose.Schema(
     hoursWorked: { type: Number, default: 0 },
     notes: String,
     aiFlag: { type: String, enum: ['normal', 'anomaly', 'review'], default: 'normal' },
+    checkInLocation: {
+      lat: Number,
+      lng: Number,
+    },
+    checkInIP: String,
+    locationMethod: {
+      type: String,
+      enum: ['gps', 'ip', 'bypass', 'remote'],
+      default: 'bypass',
+    },
+    locationVerified: { type: Boolean, default: false },
   },
   { timestamps: true }
 );

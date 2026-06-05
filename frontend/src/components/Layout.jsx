@@ -17,7 +17,7 @@ export default function Layout({ children, title }) {
     <div className="min-h-screen bg-slate-50">
       <nav className="sticky top-0 z-30 bg-white/95 backdrop-blur border-b border-slate-200 shadow-sm">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex flex-wrap items-center justify-between gap-3 h-16">
+          <div className="flex flex-wrap items-center justify-between gap-3 min-h-[4rem] py-3 sm:py-0">
             <Link to={dashPath} className="flex items-center gap-3">
               <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-brand-100 text-brand-700 font-bold shadow-sm">
                 K
@@ -32,6 +32,12 @@ export default function Layout({ children, title }) {
                 <span className="text-sm font-medium text-slate-800">{user?.name}</span>
                 <span className="text-xs text-slate-500">{user?.email}</span>
               </div>
+              <Link
+                to="/"
+                className="btn btn-secondary px-4 py-2 text-sm text-slate-650 bg-slate-100 hover:bg-slate-200 transition"
+              >
+                Main Site
+              </Link>
               {isEmployee(user?.role) && !user?.profile?.onboardingComplete && (
                 <Link
                   to="/onboarding"

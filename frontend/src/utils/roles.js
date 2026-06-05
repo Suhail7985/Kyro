@@ -3,6 +3,7 @@ export const ROLES = {
   SENIOR_MANAGER: 'senior_manager',
   HR_RECRUITER: 'hr_recruiter',
   EMPLOYEE: 'employee',
+  APPLICANT: 'applicant',
 };
 
 export const ROLE_LABELS = {
@@ -10,6 +11,7 @@ export const ROLE_LABELS = {
   [ROLES.SENIOR_MANAGER]: 'Senior Manager',
   [ROLES.HR_RECRUITER]: 'HR Recruiter',
   [ROLES.EMPLOYEE]: 'Employee',
+  [ROLES.APPLICANT]: 'Candidate',
 };
 
 export function dashboardPath(role) {
@@ -20,6 +22,8 @@ export function dashboardPath(role) {
       return '/dashboard/manager';
     case ROLES.HR_RECRUITER:
       return '/dashboard/recruiter';
+    case ROLES.APPLICANT:
+      return '/dashboard/candidate';
     default:
       return '/dashboard/employee';
   }

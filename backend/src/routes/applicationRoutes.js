@@ -7,33 +7,33 @@ const {
   uploadVideo,
   bulkScore,
 } = require('../controllers/applicationController');
-const { authenticate, authorize } = require('../middleware/auth');
+const { auth, authorize } = require('../middleware/auth');
 const { resumeUpload, videoUpload } = require('../middleware/upload');
 
 const router = express.Router();
 
-router.get('/', authenticate, listApplications);
-router.post('/bulk-score', authenticate, authorize('recruiter', 'admin'), bulkScore);
+router.get('/', auth, listApplications);
+router.post('/bulk-score', auth, authorize('recruiter', 'admin'), bulkScore);
 router.post(
   '/:jobId/upload',
-  authenticate,
+  auth,
   authorize('employee', 'candidate'),
   resumeUpload.single('resume'),
   uploadResume
 );
 router.put(
   '/:id/status',
-  authenticate,
+  auth,
   authorize('recruiter', 'admin'),
   updateStatus
 );
 router.post(
   '/:id/video',
-  authenticate,
+  auth,
   authorize('employee', 'candidate'),
   videoUpload.single('video'),
   uploadVideo
 );
-router.get('/:id', authenticate, getApplication);
+router.get('/:id', auth, getApplication);
 
 module.exports = router;

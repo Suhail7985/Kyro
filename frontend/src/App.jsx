@@ -5,12 +5,14 @@ import { dashboardPath } from './utils/roles';
 import Landing from './pages/Landing';
 import Login from './pages/Login';
 import Register from './pages/Register';
+import VerifyEmail from './pages/VerifyEmail';
 import Onboarding from './pages/Onboarding';
 import EmployeeDashboard from './pages/EmployeeDashboard';
 import RecruiterDashboard from './pages/RecruiterDashboard';
 import AdminDashboard from './pages/AdminDashboard';
 import SeniorManagerDashboard from './pages/SeniorManagerDashboard';
 import VideoInterview from './pages/VideoInterview';
+import CandidateDashboard from './pages/CandidateDashboard';
 import AccessDenied from './pages/AccessDenied';
 
 function HomeRedirect() {
@@ -28,12 +30,21 @@ export default function App() {
           <Route path="/" element={<HomeRedirect />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
-          <Route path="/candidate" element={<Navigate to="/employee" replace />} />
+          <Route path="/verify-email" element={<VerifyEmail />} />
+          <Route path="/candidate" element={<Navigate to="/dashboard/candidate" replace />} />
           <Route
             path="/onboarding"
             element={
               <ProtectedRoute roles={['employee']}>
                 <Onboarding />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/dashboard/candidate"
+            element={
+              <ProtectedRoute roles={['applicant']}>
+                <CandidateDashboard />
               </ProtectedRoute>
             }
           />
@@ -72,7 +83,7 @@ export default function App() {
           <Route
             path="/interview/:appId"
             element={
-              <ProtectedRoute roles={['employee']}>
+              <ProtectedRoute roles={['applicant']}>
                 <VideoInterview />
               </ProtectedRoute>
             }

@@ -2,7 +2,7 @@ import { Request, Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
 import { env } from '../config/env';
 import { User, IUser } from '../models/User';
-import { UserRole } from '../types/roles';
+import { UserRole, canAccess } from '../types/roles';
 
 export interface AuthRequest extends Request {
   user?: IUser;
@@ -38,7 +38,29 @@ export function authorize(...roles: UserRole[]) {
       return;
     }
     if (!roles.includes(req.user.role)) {
-      res.status(403).json({ success: false, message: 'Insufficient permissions' });
+      res.status(403).json({
+        success: false,
+        message: 'Access denied: insufficient role permissions',
+        requiredRoles: roles,
+        currentRole: req.user.role,
+      });
+      return;
+    }
+    next();
+  };
+}
+
+export function requirePermission(permission: string) {
+  return (req: AuthRequest, res: Response, next: NextFunction) => {
+    if (!req.user) {
+      res.status(401).json({ success: false, message: 'Authentication required' });
+      return;
+    }
+    if (!canAccess(req.user.role, permission)) {
+      res.status(403).json({
+        success: false,
+        message: `Access denied: missing permission '${permission}'`,
+      });
       return;
     }
     next();

@@ -56,7 +56,7 @@ async function seed() {
     name: 'System Admin',
     email: env.ADMIN_EMAIL,
     passwordHash: await hash(env.ADMIN_PASSWORD),
-    role: 'admin',
+    role: 'management_admin',
   });
 
   const managers = [];

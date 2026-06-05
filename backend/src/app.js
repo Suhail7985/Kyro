@@ -7,13 +7,18 @@ const rateLimit = require('express-rate-limit');
 const path = require('path');
 
 const authRoutes = require('./routes/authRoutes');
+const applicantAuthRoutes = require('./routes/applicantAuthRoutes');
 const userRoutes = require('./routes/userRoutes');
+const adminUserRoutes = require('./routes/adminUserRoutes');
 const jobRoutes = require('./routes/jobRoutes');
 const applicationRoutes = require('./routes/applicationRoutes');
+const recruitmentRoutes = require('./routes/recruitmentRoutes');
+const videoInterviewRoutes = require('./routes/videoInterviewRoutes');
 const statsRoutes = require('./routes/statsRoutes');
 const hrRoutes = require('./routes/hrRoutes');
 const aiRoutes = require('./routes/aiRoutes');
-
+const mediaRoutes = require('./routes/mediaRoutes');
+const cookieParser = require('cookie-parser');
 const app = express();
 const PORT = process.env.PORT || 5000;
 
@@ -24,6 +29,7 @@ app.use(
     credentials: true,
   })
 );
+app.use(cookieParser());
 app.use(express.json({ limit: '2mb' }));
 app.use(express.urlencoded({ extended: true }));
 
@@ -41,12 +47,17 @@ app.get('/api/health', (_req, res) => {
 });
 
 app.use('/api/auth', authRoutes);
+app.use('/api/applicants/auth', applicantAuthRoutes);
 app.use('/api/users', userRoutes);
+app.use('/api/admin/users', adminUserRoutes);
 app.use('/api/jobs', jobRoutes);
 app.use('/api/applications', applicationRoutes);
+app.use('/api/recruitment', recruitmentRoutes);
+app.use('/api/interviews', videoInterviewRoutes);
 app.use('/api/statistics', statsRoutes);
 app.use('/api/hr', hrRoutes);
 app.use('/api/ai', aiRoutes);
+app.use('/api/media', mediaRoutes);
 
 app.use((err, _req, res, _next) => {
   console.error(err);
@@ -56,7 +67,7 @@ app.use((err, _req, res, _next) => {
 async function seedAdmin() {
   const bcrypt = require('bcryptjs');
   const User = require('./models/User');
-  const adminEmail = process.env.ADMIN_EMAIL || 'admin@hiring.com';
+  const adminEmail = process.env.ADMIN_EMAIL || 'admin@kyro.com';
   const exists = await User.findOne({ email: adminEmail });
   if (!exists && process.env.ADMIN_PASSWORD) {
     await User.create({
@@ -64,6 +75,7 @@ async function seedAdmin() {
       email: adminEmail,
       passwordHash: await bcrypt.hash(process.env.ADMIN_PASSWORD, 12),
       role: 'admin',
+      accountStatus: 'active',
       profile: { onboardingComplete: true },
     });
     console.log('Admin user seeded:', adminEmail);

@@ -11,6 +11,7 @@ const payrollSchema = new mongoose.Schema(
     netPay: { type: Number, required: true },
     status: { type: String, enum: ['draft', 'processed', 'paid'], default: 'processed' },
     payslipUrl: String,
+    stripePaymentId: String,
   },
   { timestamps: true }
 );

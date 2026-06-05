@@ -11,7 +11,7 @@ async function getStatistics(req, res) {
         Job.countDocuments(),
         Application.countDocuments(),
         Application.find().populate('jobId', 'title'),
-        User.countDocuments({ role: { $in: ['employee', 'candidate'] } }),
+        User.countDocuments({ role: 'employee' }),
         Payroll.aggregate([{ $group: { _id: null, total: { $sum: '$netPay' } } }]),
       ]);
 
@@ -19,19 +19,21 @@ async function getStatistics(req, res) {
     const skillCounts = {};
 
     for (const app of applications) {
-      statusCounts[app.status] = (statusCounts[app.status] || 0) + 1;
+      const rawStatus = app.pipelineStatus || app.status || 'applied';
+      const statusValue = rawStatus.toLowerCase();
+      statusCounts[statusValue] = (statusCounts[statusValue] || 0) + 1;
       for (const skill of app.matchedSkills || []) {
         skillCounts[skill] = (skillCounts[skill] || 0) + 1;
       }
     }
 
-    const scores = applications.map((a) => a.score).filter((s) => s > 0);
+    const scores = applications.map((a) => a.matchScore !== undefined ? a.matchScore : (a.score !== undefined ? a.score : 0)).filter((s) => s > 0);
     const avgScore = scores.length
       ? Math.round(scores.reduce((a, b) => a + b, 0) / scores.length)
       : 0;
 
-    const shortlisted = statusCounts.Shortlisted || 0;
-    const rejected = statusCounts.Rejected || 0;
+    const shortlisted = statusCounts.shortlisted || statusCounts.Shortlisted || 0;
+    const rejected = statusCounts.rejected || statusCounts.Rejected || 0;
 
     const topSkills = Object.entries(skillCounts)
       .sort((a, b) => b[1] - a[1])

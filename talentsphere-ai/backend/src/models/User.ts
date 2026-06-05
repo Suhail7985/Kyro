@@ -6,6 +6,9 @@ export interface IUser extends Document {
   email: string;
   passwordHash: string;
   role: UserRole;
+  department?: string;
+  managerId?: Types.ObjectId;
+  permissions?: string[];
   avatar?: string;
   isActive: boolean;
   lastLogin?: Date;
@@ -20,9 +23,12 @@ const userSchema = new Schema<IUser>(
     passwordHash: { type: String, required: true, select: false },
     role: {
       type: String,
-      enum: ['admin', 'senior_manager', 'hr_recruiter', 'employee'],
-      required: true,
+      enum: ['management_admin', 'senior_manager', 'hr_recruiter', 'employee', 'applicant'],
+      default: 'employee',
     },
+    department: { type: String },
+    managerId: { type: Schema.Types.ObjectId, ref: 'User' },
+    permissions: { type: [String], default: [] },
     avatar: String,
     isActive: { type: Boolean, default: true },
     lastLogin: Date,
@@ -32,6 +38,7 @@ const userSchema = new Schema<IUser>(
 
 userSchema.index({ role: 1 });
 userSchema.index({ email: 1 });
+userSchema.index({ managerId: 1 });
 
 export const User = mongoose.model<IUser>('User', userSchema);
 

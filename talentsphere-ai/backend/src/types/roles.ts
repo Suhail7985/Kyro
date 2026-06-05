@@ -1,7 +1,7 @@
-export type UserRole = 'admin' | 'senior_manager' | 'hr_recruiter' | 'employee';
+export type UserRole = 'management_admin' | 'senior_manager' | 'hr_recruiter' | 'employee' | 'applicant';
 
 export const ROLE_PERMISSIONS: Record<UserRole, string[]> = {
-  admin: ['*'],
+  management_admin: ['*'],
   senior_manager: [
     'team:read',
     'performance:read',
@@ -9,6 +9,8 @@ export const ROLE_PERMISSIONS: Record<UserRole, string[]> = {
     'leave:approve',
     'attendance:read',
     'analytics:team',
+    'goals:write',
+    'reports:team',
   ],
   hr_recruiter: [
     'jobs:*',
@@ -16,6 +18,7 @@ export const ROLE_PERMISSIONS: Record<UserRole, string[]> = {
     'resumes:*',
     'interviews:*',
     'recruitment:analytics',
+    'reports:hiring',
   ],
   employee: [
     'attendance:self',
@@ -23,11 +26,16 @@ export const ROLE_PERMISSIONS: Record<UserRole, string[]> = {
     'payroll:self',
     'performance:self',
     'onboarding:self',
+    'profile:self',
+    'documents:self',
+    'career:self',
   ],
 };
 
 export function canAccess(role: UserRole, permission: string): boolean {
   const perms = ROLE_PERMISSIONS[role];
   if (perms.includes('*')) return true;
-  return perms.some((p) => p === permission || p.endsWith(':*') && permission.startsWith(p.replace(':*', '')));
+  return perms.some(
+    (p) => p === permission || (p.endsWith(':*') && permission.startsWith(p.replace(':*', '')))
+  );
 }

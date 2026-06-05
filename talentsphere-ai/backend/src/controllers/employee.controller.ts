@@ -44,9 +44,42 @@ export async function getEmployee(req: AuthRequest, res: Response) {
   res.json({ success: true, data: emp });
 }
 
+export async function createEmployee(req: AuthRequest, res: Response) {
+  const { userId, departmentId, designationId, managerId, salary, skills, joinDate } = req.body;
+  const user = await User.findById(userId);
+  if (!user) {
+    res.status(404).json({ success: false, message: 'User not found' });
+    return;
+  }
+  let employeeId = '';
+  let isUnique = false;
+  while (!isUnique) {
+    const count = await Employee.countDocuments();
+    employeeId = `EMP-${String(count + Math.floor(Math.random() * 100) + 1).padStart(4, '0')}`;
+    const existing = await Employee.findOne({ employeeId });
+    if (!existing) isUnique = true;
+  }
+  const emp = await Employee.create({
+    userId, employeeId, departmentId, designationId, managerId,
+    salary: salary || 0, skills: skills || [], joinDate: joinDate || new Date(),
+    lifecycleStage: 'onboarding', onboardingComplete: false,
+  });
+  res.status(201).json({ success: true, data: emp });
+}
+
 export async function updateEmployee(req: AuthRequest, res: Response) {
   const emp = await Employee.findByIdAndUpdate(req.params.id, req.body, { new: true });
   res.json({ success: true, data: emp });
+}
+
+export async function deleteEmployee(req: AuthRequest, res: Response) {
+  const emp = await Employee.findById(req.params.id);
+  if (!emp) {
+    res.status(404).json({ success: false, message: 'Employee not found' });
+    return;
+  }
+  await User.findByIdAndUpdate(emp.userId, { isActive: false });
+  res.json({ success: true, message: 'Employee deactivated successfully' });
 }
 
 export async function listDepartments(_req: AuthRequest, res: Response) {
@@ -57,6 +90,20 @@ export async function listDepartments(_req: AuthRequest, res: Response) {
 export async function createDepartment(req: AuthRequest, res: Response) {
   const dep = await Department.create(req.body);
   res.status(201).json({ success: true, data: dep });
+}
+
+export async function updateDepartment(req: AuthRequest, res: Response) {
+  const dep = await Department.findByIdAndUpdate(req.params.id, req.body, { new: true });
+  if (!dep) {
+    res.status(404).json({ success: false, message: 'Department not found' });
+    return;
+  }
+  res.json({ success: true, data: dep });
+}
+
+export async function deleteDepartment(req: AuthRequest, res: Response) {
+  await Department.findByIdAndDelete(req.params.id);
+  res.json({ success: true, message: 'Department deleted' });
 }
 
 export async function listDesignations(_req: AuthRequest, res: Response) {
