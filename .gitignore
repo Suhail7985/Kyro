@@ -1,0 +1,51 @@
+# Node modules
+node_modules/
+**/node_modules/
+
+# Build output
+dist/
+**/dist/
+build/
+.next/
+
+# Environment files
+.env
+.env.local
+.env.*.local
+
+# Uploads and runtime files
+uploads/
+backend/uploads/
+frontend/uploads/
+
+tmp/
+*.tmp
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Coverage
+coverage/
+
+# Vercel
+.vercel
+
+# SSL
+*.pem
+
+# IDE / editor files
+.vscode/
+.idea/
+
+# Misc
+*.bak
+*.swp
+*~
