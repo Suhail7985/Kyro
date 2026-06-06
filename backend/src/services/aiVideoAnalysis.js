@@ -2,21 +2,35 @@
  * AI Video Analysis service using Gemini.
  */
 
-async function analyzeVideoResponse(videoUrl, questionText, expectedSkills = []) {
+async function analyzeVideoResponse(videoUrl, questionText, expectedSkills = [], transcript = '') {
   const apiKey = process.env.GEMINI_API_KEY;
   if (!apiKey) {
     console.log('Gemini API key not configured, returning simulated video analysis.');
-    return simulateVideoAnalysis(questionText);
+    return simulateVideoAnalysis(questionText, transcript);
   }
 
-  const prompt = `You are an expert AI interviewer. Analyze the video response submitted at URL: "${videoUrl}".
+  // If the transcript is totally empty, score them 0.
+  if (!transcript || transcript.trim() === '') {
+    return {
+      transcript: "[Silence / No audio detected]",
+      confidenceScore: 0,
+      toneAnalysis: "Silent",
+      matchingKeywords: [],
+      overallFeedback: "The candidate did not speak or the audio was completely silent. Cannot assess skills."
+    };
+  }
+
+  const prompt = `You are an expert AI interviewer. Analyze the candidate's spoken response.
 The candidate was asked: "${questionText}".
 Required skills for this role include: ${expectedSkills.join(', ')}.
 
+The candidate's exact spoken words (transcribed via Web Speech API):
+"${transcript}"
+
 Analyze the candidate's response and output ONLY a valid JSON object:
 {
-  "transcript": "A detailed, realistic transcript of what the candidate said in the video regarding this question (simulated based on the URL and question context)",
-  "confidenceScore": <number 0-100>,
+  "transcript": "Return the exact transcribed words provided above, fixing any minor punctuation.",
+  "confidenceScore": <number 0-100 based on the quality of their answer>,
   "toneAnalysis": "e.g., confident, clear, structured, or hesitant",
   "matchingKeywords": ["keyword1", "keyword2"],
   "overallFeedback": "assessment of the answer quality, skills demonstrated, and areas of improvement"
@@ -36,19 +50,28 @@ Analyze the candidate's response and output ONLY a valid JSON object:
     const resultText = data.candidates?.[0]?.content?.parts?.[0]?.text || '{}';
     const parsed = JSON.parse(resultText.replace(/```json|```/g, '').trim());
     return {
-      transcript: parsed.transcript || `Transcript of candidate answering: ${questionText}`,
-      confidenceScore: parsed.confidenceScore || 85,
-      toneAnalysis: parsed.toneAnalysis || 'Confident, clear, and focused',
+      transcript: parsed.transcript || transcript,
+      confidenceScore: parsed.confidenceScore || 0,
+      toneAnalysis: parsed.toneAnalysis || 'Unclear',
       matchingKeywords: parsed.matchingKeywords || [],
-      overallFeedback: parsed.overallFeedback || 'Solid answer demonstrating experience with the topic.',
+      overallFeedback: parsed.overallFeedback || 'Could not parse feedback.',
     };
   } catch (err) {
     console.error('Gemini video analysis failed, returning simulated values:', err.message);
-    return simulateVideoAnalysis(questionText);
+    return simulateVideoAnalysis(questionText, transcript);
   }
 }
 
-function simulateVideoAnalysis(questionText) {
+function simulateVideoAnalysis(questionText, transcript) {
+  if (!transcript || transcript.trim() === '') {
+    return {
+      transcript: "[Silence / No audio detected]",
+      confidenceScore: 0,
+      toneAnalysis: "Silent",
+      matchingKeywords: [],
+      overallFeedback: "The candidate did not speak or the audio was completely silent. Cannot assess skills."
+    };
+  }
   const keywords = ['structure', 'teamwork', 'communication', 'problem-solving', 'scalable', 'agile', 'engineering'];
   const matching = keywords.filter(() => Math.random() > 0.4);
   

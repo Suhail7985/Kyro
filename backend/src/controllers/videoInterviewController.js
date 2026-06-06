@@ -60,7 +60,7 @@ function generateQuestionsFromSkills(skills, requirements) {
 async function uploadInterviewVideo(req, res) {
   try {
     const applicationId = req.params.applicationId || req.body.applicationId;
-    const { questionId, question, videoUrl } = req.body;
+    const { questionId, question, videoUrl, transcript } = req.body;
 
     if (!req.file && !videoUrl) {
       return res.status(400).json({ message: 'Video file or videoUrl is required' });
@@ -112,7 +112,7 @@ async function uploadInterviewVideo(req, res) {
     // Run AI video analysis
     const { analyzeVideoResponse } = require('../services/aiVideoAnalysis');
     const job = await Job.findById(application.jobId);
-    const analysis = await analyzeVideoResponse(finalVideoUrl, question || 'Interview Question', job?.requiredSkills || []);
+    const analysis = await analyzeVideoResponse(finalVideoUrl, question || 'Interview Question', job?.requiredSkills || [], transcript);
 
     // Add video to application
     const videoEntry = {

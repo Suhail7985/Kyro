@@ -9,18 +9,45 @@ export default function VideoRecorder({ onRecorded, disabled }) {
   const [previewUrl, setPreviewUrl] = useState(null);
   const [error, setError] = useState('');
 
+  const recognitionRef = useRef(null);
+  const transcriptRef = useRef('');
+
   useEffect(() => {
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    if (SpeechRecognition) {
+      const recognition = new SpeechRecognition();
+      recognition.continuous = true;
+      recognition.interimResults = true;
+      recognition.onresult = (e) => {
+        let finalTranscript = '';
+        for (let i = e.resultIndex; i < e.results.length; ++i) {
+          if (e.results[i].isFinal) {
+            finalTranscript += e.results[i][0].transcript + ' ';
+          }
+        }
+        if (finalTranscript) {
+          transcriptRef.current += finalTranscript;
+        }
+      };
+      recognitionRef.current = recognition;
+    }
+    
     return () => {
       if (streamRef.current) {
         streamRef.current.getTracks().forEach((t) => t.stop());
       }
       if (previewUrl) URL.revokeObjectURL(previewUrl);
+      if (recognitionRef.current) {
+        try { recognitionRef.current.stop(); } catch (e) {}
+      }
     };
   }, [previewUrl]);
 
   const startRecording = async () => {
     try {
       setError('');
+      transcriptRef.current = '';
+      
       const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
       streamRef.current = stream;
       if (videoRef.current) {
@@ -37,14 +64,21 @@ export default function VideoRecorder({ onRecorded, disabled }) {
         if (e.data.size > 0) chunksRef.current.push(e.data);
       };
       recorder.onstop = () => {
+        if (recognitionRef.current) {
+          try { recognitionRef.current.stop(); } catch (e) {}
+        }
         const blob = new Blob(chunksRef.current, { type: mimeType });
         const url = URL.createObjectURL(blob);
         setPreviewUrl(url);
         const ext = mimeType.includes('webm') ? 'webm' : 'mp4';
         const file = new File([blob], `interview.${ext}`, { type: blob.type });
-        onRecorded?.(file, url);
+        onRecorded?.(file, url, transcriptRef.current.trim());
         stream.getTracks().forEach((t) => t.stop());
       };
+      
+      if (recognitionRef.current) {
+        try { recognitionRef.current.start(); } catch (e) {}
+      }
       recorder.start(1000);
       setRecording(true);
     } catch (err) {
@@ -55,6 +89,9 @@ export default function VideoRecorder({ onRecorded, disabled }) {
   const stopRecording = () => {
     if (mediaRecorderRef.current?.state === 'recording') {
       mediaRecorderRef.current.stop();
+    }
+    if (recognitionRef.current) {
+      try { recognitionRef.current.stop(); } catch (e) {}
     }
     setRecording(false);
   };

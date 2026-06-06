@@ -9,10 +9,11 @@ export default function VideoInterview() {
   const navigate = useNavigate();
   const [videoFile, setVideoFile] = useState(null);
   const [uploading, setUploading] = useState(false);
-  const [message, setMessage] = useState('');
+  const [transcript, setTranscript] = useState('');
 
-  const handleRecorded = (file) => {
+  const handleRecorded = (file, url, recordedTranscript) => {
     setVideoFile(file);
+    setTranscript(recordedTranscript);
     setMessage('Recording ready. Click Upload to submit.');
   };
 
@@ -23,7 +24,7 @@ export default function VideoInterview() {
     }
     setUploading(true);
     try {
-      await applicationsAPI.uploadVideo(appId, videoFile);
+      await applicationsAPI.uploadVideo(appId, videoFile, { transcript });
       setMessage('Video interview uploaded successfully!');
       setTimeout(() => navigate('/dashboard/candidate'), 1500);
     } catch (err) {
