@@ -42,8 +42,8 @@ async function registerApplicant(req, res) {
       role: 'applicant',
       accountStatus: 'active',
       conversionStatus: 'applicant',
-      isEmailVerified: false,
-      emailVerificationToken: verificationToken,
+      isEmailVerified: true,
+      emailVerificationToken: '',
       profile: {
         phone: phone || '',
         location: location || '',
@@ -87,11 +87,6 @@ async function loginApplicant(req, res) {
     const valid = await bcrypt.compare(password, applicant.passwordHash);
     if (!valid) {
       return res.status(401).json({ message: 'Invalid credentials' });
-    }
-
-    // Email verification check
-    if (!applicant.isEmailVerified) {
-      return res.status(403).json({ message: 'Please verify your email address before logging in. Check your inbox.' });
     }
 
     // MFA Check
