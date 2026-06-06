@@ -11,6 +11,7 @@ const PIPELINE_STAGES = [
   { id: 'recruiter_review', label: 'Recruiter Review' },
   { id: 'manager_review', label: 'Manager Review' },
   { id: 'selected', label: 'Selected' },
+  { id: 'rejected', label: 'Rejected' },
 ];
 
 export default function ApplicantKanbanBoard({ applications, onStatusChange, onPlayVideo }) {

@@ -357,6 +357,23 @@ async function updateApplicationStatus(req, res) {
     if (feedback !== undefined) {
       application.recruiterFeedback = feedback;
     }
+    
+    // Manage rejection and selection flags
+    if (targetStatus === 'rejected') {
+      application.isRejected = true;
+    } else {
+      application.isRejected = false;
+    }
+
+    if (targetStatus === 'selected' || targetStatus === 'onboarding') {
+      if (!application.isSelected) {
+        application.isSelected = true;
+        application.selectedDate = new Date();
+      }
+    } else {
+      application.isSelected = false;
+    }
+
     if (req.user.role === 'hr_recruiter') {
       application.recruiterReviewedAt = new Date();
     } else if (req.user.role === 'senior_manager') {
