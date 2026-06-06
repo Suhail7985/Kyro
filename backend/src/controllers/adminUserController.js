@@ -31,7 +31,7 @@ async function createUser(req, res) {
       department: department || '',
       designation: designation || '',
       managerId: managerId || null,
-      accountStatus: 'pending',
+      accountStatus: 'active',
       createdBy: req.user._id,
     });
 
