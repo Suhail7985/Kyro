@@ -681,8 +681,6 @@ export default function EmployeeDashboard() {
               />
             </div>
 
-            </div>
-
             <button
               type="submit"
               disabled={profileSubmitting}
