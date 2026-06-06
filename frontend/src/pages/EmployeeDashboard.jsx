@@ -681,30 +681,6 @@ export default function EmployeeDashboard() {
               />
             </div>
 
-            <div className="bg-slate-50 p-4 rounded-2xl border border-slate-100 flex items-center justify-between my-4">
-              <div>
-                <h4 className="font-semibold text-slate-900 text-sm">Two-Factor Authentication (MFA)</h4>
-                <p className="text-xs text-slate-500 mt-1">Require a 6-digit OTP code sent via email upon logging in to secure your account.</p>
-              </div>
-              <input
-                type="checkbox"
-                checked={mfaEnabled}
-                onChange={async (e) => {
-                  const nextVal = e.target.checked;
-                  try {
-                    const res = await authAPI.toggleMfa(nextVal);
-                    setMfaEnabled(res.data.mfaEnabled);
-                    setMessage(res.data.message);
-                    
-                    const updatedUser = { ...user, mfaEnabled: res.data.mfaEnabled };
-                    setUser(updatedUser);
-                    localStorage.setItem('user', JSON.stringify(updatedUser));
-                  } catch (err) {
-                    setMessage('Failed to toggle MFA');
-                  }
-                }}
-                className="w-4.5 h-4.5 text-brand-600 border-slate-300 rounded focus:ring-brand-500 cursor-pointer"
-              />
             </div>
 
             <button
