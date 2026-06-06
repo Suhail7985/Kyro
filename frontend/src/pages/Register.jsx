@@ -125,12 +125,6 @@ export default function Register() {
               <li>• Receive personalized feedback and matching insights</li>
             </ul>
           </div>
-          <div className="rounded-3xl bg-white/10 p-6">
-            <p className="text-sm font-semibold text-white">Demo credentials</p>
-            <p className="text-xs text-slate-100 mt-3 leading-6">
-              Admin: admin@hiring.com / Admin123!<br />Recruiter: recruiter@hiring.com / Recruiter123!<br />Employee: employee@hiring.com / Employee123!
-            </p>
-          </div>
         </div>
       </div>
     </div>
