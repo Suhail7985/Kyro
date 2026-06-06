@@ -117,7 +117,7 @@ async function checkOut(req, res) {
 
 async function getAttendance(req, res) {
   try {
-    const userId = req.query.userId || req.user._id;
+    const userId = req.query.userId || req.user._id.toString();
     if (userId !== req.user._id.toString() && !userHasRole(req.user, ['admin', 'senior_manager'])) {
       return res.status(403).json({ message: 'Not authorized' });
     }
@@ -130,7 +130,7 @@ async function getAttendance(req, res) {
 
 async function attendanceInsights(req, res) {
   try {
-    const userId = req.query.userId || req.user._id;
+    const userId = req.query.userId || req.user._id.toString();
     if (userId !== req.user._id.toString() && !userHasRole(req.user, ['admin', 'senior_manager'])) {
       return res.status(403).json({ message: 'Not authorized' });
     }
