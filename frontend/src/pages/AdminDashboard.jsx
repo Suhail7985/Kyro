@@ -461,26 +461,48 @@ export default function AdminDashboard() {
 
       {tab === 'payroll' && (
         <div className="grid md:grid-cols-2 gap-6">
-          <div className="card p-6">
-            <h2 className="section-heading mb-4">Disburse Payroll Payments</h2>
+          <div className="card p-6 border-emerald-100">
+            <div className="flex items-center gap-3 mb-4">
+              <div className="w-10 h-10 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center">
+                <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+              </div>
+              <h2 className="section-heading mb-0">Disburse Payroll Payments</h2>
+            </div>
+            
+            <p className="text-sm text-slate-500 mb-6">
+              This automated pipeline will calculate taxes and allowances, securely trigger Stripe payouts, and email digital payslips to all active employees.
+            </p>
+
             <form onSubmit={handleRunPayroll} className="space-y-4">
-              <div>
-                <label className="block text-sm font-medium text-slate-700 mb-2">Select Month</label>
+              <div className="bg-slate-50 p-4 rounded-xl border border-slate-100 mb-4">
+                <label className="block text-sm font-semibold text-slate-700 mb-2">Select Payroll Month</label>
                 <input
-                  type="text"
+                  type="month"
                   value={payrollMonth}
                   onChange={(e) => setPayrollMonth(e.target.value)}
                   required
-                  className="input-field"
-                  placeholder="e.g. June 2026"
+                  className="w-full px-4 py-3 rounded-lg border border-slate-200 focus:outline-none focus:ring-2 focus:ring-emerald-500 text-slate-800 font-medium"
                 />
               </div>
+              
               <button
                 type="submit"
                 disabled={payrollRunning}
-                className="btn btn-primary w-full py-3 text-sm bg-emerald-600 hover:bg-emerald-700"
+                className="w-full py-3.5 px-4 rounded-xl font-bold text-white bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 shadow-md shadow-emerald-500/20 transition-all disabled:opacity-50 flex items-center justify-center gap-2"
               >
-                {payrollRunning ? 'Processing...' : 'Run Payroll calculations & Disburse'}
+                {payrollRunning ? (
+                  <>
+                    <svg className="animate-spin h-5 w-5 text-white" fill="none" viewBox="0 0 24 24">
+                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    </svg>
+                    Processing Payouts...
+                  </>
+                ) : (
+                  'Run Payroll & Disburse Funds'
+                )}
               </button>
             </form>
           </div>
