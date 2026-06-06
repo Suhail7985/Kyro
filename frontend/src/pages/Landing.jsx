@@ -61,14 +61,14 @@ export default function Landing() {
           </motion.div>
           
           <motion.h1 variants={itemVariants} className="text-5xl sm:text-6xl lg:text-7xl font-extrabold tracking-tight mb-8">
-            <span className="block text-white">Hire Smarter.</span>
+            <span className="block text-white">Build the Future of</span>
             <span className="block text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 via-violet-400 to-purple-400">
-              Manage Better.
+              HR Management
             </span>
           </motion.h1>
           
           <motion.p variants={itemVariants} className="text-lg sm:text-xl text-slate-400 mb-10 leading-relaxed max-w-2xl mx-auto">
-            Kyro is an AI-powered platform that automates resume screening, conducts video interviews, and streamlines your entire workforce management in real-time.
+            A next-generation Human Resource Management System (HRMS) that leverages artificial intelligence to streamline and automate HR operations for modern workplaces.
           </motion.p>
           
           <motion.div variants={itemVariants} className="flex flex-col sm:flex-row items-center justify-center gap-4">
