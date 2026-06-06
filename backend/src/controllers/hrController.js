@@ -262,12 +262,12 @@ async function runPayroll(req, res) {
 
       // Trigger email alert
       const { sendEmail } = require('../utils/mailer');
-      await sendEmail({
+      sendEmail({
         to: emp.email,
         subject: `Payslip Issued - ${month}`,
         text: `Hello ${emp.name},\n\nYour payroll for ${month} has been processed.\nNet Payout: $${netPay}\nTransaction Ref: ${stripePaymentId}\n\nYou can view and download your payslip on the Employee Dashboard.\n\nBest regards,\nKyro HR Team`,
         html: `<p>Hello <b>${emp.name}</b>,</p><p>Your payroll for <b>${month}</b> has been processed.</p><p><b>Net Payout:</b> $${netPay}<br><b>Transaction Ref:</b> ${stripePaymentId}</p><p>You can view and download your payslip on the Employee Dashboard.</p><br><p>Best regards,<br>Kyro HR Team</p>`
-      });
+      }).catch(err => console.error('Failed to notify employee in background:', err.message));
     }
     res.json({ message: `Payroll processed for ${created.length} employees`, count: created.length });
   } catch (err) {
