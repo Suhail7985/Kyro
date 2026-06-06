@@ -38,6 +38,7 @@ const jobSchema = new mongoose.Schema(
     createdBy: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
     applicantCount: { type: Number, default: 0 },
     viewCount: { type: Number, default: 0 },
+    interviewQuestions: [String],
   },
   { timestamps: true }
 );
