@@ -26,6 +26,7 @@ export default function AdminDashboard() {
     department: 'Engineering',
     designation: 'Software Engineer',
     managerId: '',
+    password: '',
   });
   const [userSubmitting, setUserSubmitting] = useState(false);
   const [createdCredentials, setCreatedCredentials] = useState(null);
@@ -277,6 +278,19 @@ export default function AdminDashboard() {
                   onChange={(e) => setNewUser({ ...newUser, email: e.target.value })}
                   required
                   className="input-field"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-slate-700 mb-2">
+                  Initial Password <span className="text-slate-400 font-normal">(Optional)</span>
+                </label>
+                <input
+                  type="text"
+                  placeholder="Leave empty to auto-generate"
+                  value={newUser.password}
+                  onChange={(e) => setNewUser({ ...newUser, password: e.target.value })}
+                  className="input-field font-mono"
                 />
               </div>
 

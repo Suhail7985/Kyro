@@ -4,7 +4,7 @@ const { ROLES, isInternalUser } = require('../utils/roles');
 
 async function createUser(req, res) {
   try {
-    const { name, email, role, department, designation, managerId } = req.body;
+    const { name, email, role, department, designation, managerId, password } = req.body;
 
     if (!name || !email || !role) {
       return res.status(400).json({ message: 'Name, email, and role are required' });
@@ -19,8 +19,8 @@ async function createUser(req, res) {
       return res.status(409).json({ message: 'Email already exists' });
     }
 
-    // Generate temporary password
-    const tempPassword = Math.random().toString(36).slice(-8) + 'Temp@123';
+    // Generate temporary password if not provided
+    const tempPassword = password || (Math.random().toString(36).slice(-8) + 'Temp@123');
     const passwordHash = await bcrypt.hash(tempPassword, 12);
 
     const user = await User.create({
