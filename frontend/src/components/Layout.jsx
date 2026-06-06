@@ -32,12 +32,6 @@ export default function Layout({ children, title }) {
                 <span className="text-sm font-medium text-slate-800">{user?.name}</span>
                 <span className="text-xs text-slate-500">{user?.email}</span>
               </div>
-              <Link
-                to="/"
-                className="btn btn-secondary px-4 py-2 text-sm text-slate-650 bg-slate-100 hover:bg-slate-200 transition"
-              >
-                Main Site
-              </Link>
               {isEmployee(user?.role) && !user?.profile?.onboardingComplete && (
                 <Link
                   to="/onboarding"
