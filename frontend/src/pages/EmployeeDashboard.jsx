@@ -105,7 +105,10 @@ export default function EmployeeDashboard() {
     }
   }, [user]);
 
+  const [checkInSubmitting, setCheckInSubmitting] = useState(false);
+
   const handleCheckIn = async (remote) => {
+    setCheckInSubmitting(true);
     if (remote) {
       executeCheckIn(true);
       return;
@@ -136,6 +139,8 @@ export default function EmployeeDashboard() {
       setMessage(`Successfully clocked in ${remote ? 'remote' : 'onsite'}.`);
     } catch (err) {
       setMessage(err.response?.data?.message || 'Check-in failed');
+    } finally {
+      setCheckInSubmitting(false);
     }
   };
 
@@ -361,24 +366,18 @@ export default function EmployeeDashboard() {
                   {!isClockedIn ? (
                     <>
                       <button
-                        disabled={profileSubmitting}
-                        onClick={() => {
-                          setProfileSubmitting(true);
-                          handleCheckIn(false).finally(() => setProfileSubmitting(false));
-                        }}
+                        disabled={checkInSubmitting}
+                        onClick={() => handleCheckIn(false)}
                         className="py-2.5 px-4 rounded-xl text-xs font-semibold text-white bg-green-600 hover:bg-green-700 transition disabled:opacity-50"
                       >
-                        Clock In Onsite
+                        {checkInSubmitting ? 'Fetching GPS...' : 'Clock In Onsite'}
                       </button>
                       <button
-                        disabled={profileSubmitting}
-                        onClick={() => {
-                          setProfileSubmitting(true);
-                          handleCheckIn(true).finally(() => setProfileSubmitting(false));
-                        }}
+                        disabled={checkInSubmitting}
+                        onClick={() => handleCheckIn(true)}
                         className="py-2.5 px-4 rounded-xl text-xs font-semibold text-white bg-brand-600 hover:bg-brand-700 transition disabled:opacity-50"
                       >
-                        Clock In Remote
+                        {checkInSubmitting ? 'Processing...' : 'Clock In Remote'}
                       </button>
                     </>
                   ) : (
