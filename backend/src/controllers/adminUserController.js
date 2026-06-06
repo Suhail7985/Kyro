@@ -4,7 +4,7 @@ const { ROLES, isInternalUser } = require('../utils/roles');
 
 async function createUser(req, res) {
   try {
-    const { name, email, role, department, designation, managerId, password } = req.body;
+    const { name, email, role, department, designation, managerId, password, salary } = req.body;
 
     if (!name || !email || !role) {
       return res.status(400).json({ message: 'Name, email, and role are required' });
@@ -31,6 +31,7 @@ async function createUser(req, res) {
       department: department || '',
       designation: designation || '',
       managerId: managerId || null,
+      salary: salary ? Number(salary) : 60000,
       accountStatus: 'active',
       createdBy: req.user._id,
     });

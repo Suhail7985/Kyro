@@ -27,6 +27,7 @@ export default function AdminDashboard() {
     designation: 'Software Engineer',
     managerId: '',
     password: '',
+    salary: '60000',
   });
   const [userSubmitting, setUserSubmitting] = useState(false);
   const [createdCredentials, setCreatedCredentials] = useState(null);
@@ -329,6 +330,18 @@ export default function AdminDashboard() {
                   placeholder="e.g. Senior Backend Engineer"
                   value={newUser.designation}
                   onChange={(e) => setNewUser({ ...newUser, designation: e.target.value })}
+                  required
+                  className="input-field"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-slate-700 mb-2">Annual Salary (USD)</label>
+                <input
+                  type="number"
+                  placeholder="e.g. 60000"
+                  value={newUser.salary}
+                  onChange={(e) => setNewUser({ ...newUser, salary: e.target.value })}
                   required
                   className="input-field"
                 />
