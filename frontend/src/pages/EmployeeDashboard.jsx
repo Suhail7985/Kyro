@@ -105,10 +105,34 @@ export default function EmployeeDashboard() {
   }, [user]);
 
   const handleCheckIn = async (remote) => {
+    if (remote) {
+      executeCheckIn(true);
+      return;
+    }
+
+    if (!navigator.geolocation) {
+      alert("Geolocation is not supported by your browser. Checking in without GPS.");
+      executeCheckIn(false);
+      return;
+    }
+
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        executeCheckIn(false, position.coords.latitude, position.coords.longitude);
+      },
+      (error) => {
+        console.warn("Geolocation denied or failed:", error.message);
+        executeCheckIn(false); // Fallback without GPS
+      },
+      { enableHighAccuracy: true, timeout: 5000 }
+    );
+  };
+
+  const executeCheckIn = async (remote, lat = null, lng = null) => {
     try {
-      await hrAPI.checkIn({ remote });
+      await hrAPI.checkIn({ remote, lat, lng });
       await load();
-      setMessage(`Clocked in successfully (${remote ? 'Remote' : 'Onsite'}).`);
+      setMessage(`Successfully clocked in ${remote ? 'remote' : 'onsite'}.`);
     } catch (err) {
       setMessage(err.response?.data?.message || 'Check-in failed');
     }
@@ -385,11 +409,23 @@ export default function EmployeeDashboard() {
                           <td className="p-3 text-slate-500">{checkInTime} - {checkOutTime}</td>
                           <td className="p-3 font-semibold">{a.hoursWorked ? `${a.hoursWorked} hrs` : '—'}</td>
                           <td className="p-3 capitalize">
-                            <span className={`px-2 py-0.5 rounded text-[10px] font-medium ${
-                              a.status === 'remote' ? 'bg-sky-50 text-sky-700' : 'bg-slate-100 text-slate-700'
-                            }`}>
-                              {a.status}
-                            </span>
+                            <div className="flex flex-col gap-1">
+                              <span className={`px-2 py-0.5 rounded w-max text-[10px] font-medium ${
+                                a.status === 'remote' ? 'bg-sky-50 text-sky-700' : 'bg-slate-100 text-slate-700'
+                              }`}>
+                                {a.status}
+                              </span>
+                              {a.locationMethod === 'gps' && a.checkInLocation && (
+                                <span className="text-[9px] text-slate-400 font-mono tracking-tighter">
+                                  {a.checkInLocation.lat.toFixed(4)}, {a.checkInLocation.lng.toFixed(4)}
+                                </span>
+                              )}
+                              {a.locationMethod === 'bypass' && a.status === 'present' && (
+                                <span className="text-[9px] text-amber-500 font-mono tracking-tighter">
+                                  No GPS Provided
+                                </span>
+                              )}
+                            </div>
                           </td>
                           <td className="p-3 capitalize">
                             <span className={`px-2 py-0.5 rounded text-[10px] font-bold ${

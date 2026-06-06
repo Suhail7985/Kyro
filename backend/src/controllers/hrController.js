@@ -55,12 +55,30 @@ async function checkIn(req, res) {
     const now = new Date();
     const isLate = now.getHours() > 9 || (now.getHours() === 9 && now.getMinutes() > 15);
 
+    const { remote, lat, lng } = req.body;
+
+    let aiFlag = 'normal';
+    let locationVerified = false;
+    let locationMethod = remote ? 'remote' : 'bypass';
+    
+    if (!remote && lat && lng) {
+      locationMethod = 'gps';
+      locationVerified = true;
+      // In a real scenario, you'd calculate Haversine distance from office coords here.
+    } else if (!remote && (!lat || !lng)) {
+      aiFlag = 'anomaly'; // Flag anomaly if they are onsite but GPS is missing
+    }
+
     if (!record) {
       record = await Attendance.create({
         userId: req.user._id,
         date: today,
         checkIn: now,
-        status: isLate ? 'late' : req.body.remote ? 'remote' : 'present',
+        status: isLate ? 'late' : remote ? 'remote' : 'present',
+        aiFlag,
+        locationMethod,
+        locationVerified,
+        checkInLocation: { lat, lng }
       });
     } else if (!record.checkIn) {
       record.checkIn = now;
