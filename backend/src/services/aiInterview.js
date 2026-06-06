@@ -45,7 +45,7 @@ Example response:
 ["question 1", "question 2"]`;
 
   try {
-    const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`;
+    const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
     const res = await fetch(url, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -55,6 +55,9 @@ Example response:
       }),
     });
     const data = await res.json();
+    if (!res.ok) {
+      throw new Error(`Gemini API Error: ${data.error?.message || res.statusText}`);
+    }
     const text = data.candidates?.[0]?.content?.parts?.[0]?.text || '[]';
     
     // Clean markdown if it leaked through

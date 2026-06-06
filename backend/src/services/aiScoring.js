@@ -59,7 +59,7 @@ Resume: ${resumeText.slice(0, 6000)}
 Return JSON only: {"score":number,"matchedSkills":[],"missingSkills":[],"feedback":"string"}`;
 
   try {
-    const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`;
+    const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
     const res = await fetch(url, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -69,6 +69,9 @@ Return JSON only: {"score":number,"matchedSkills":[],"missingSkills":[],"feedbac
       }),
     });
     const data = await res.json();
+    if (!res.ok) {
+      throw new Error(`Gemini API Error: ${data.error?.message || res.statusText}`);
+    }
     const text = data.candidates?.[0]?.content?.parts?.[0]?.text || '{}';
     return JSON.parse(text.replace(/```json|```/g, '').trim());
   } catch (err) {
