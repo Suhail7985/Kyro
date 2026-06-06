@@ -601,7 +601,8 @@ export default function CandidateDashboard() {
               
               {/* Question list selection */}
               {(() => {
-                const questionsList = selectedInterviewApp.jobId?.interviewQuestions || [
+                const jobQuestions = selectedInterviewApp.jobId?.interviewQuestions;
+                const questionsList = (jobQuestions && jobQuestions.length > 0) ? jobQuestions : [
                   'Tell us about your most challenging project and how you overcame it.',
                   'What is your approach to problem-solving in complex scenarios?',
                   'Describe a time when you had to learn a new technology quickly.',
