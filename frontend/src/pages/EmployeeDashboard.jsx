@@ -65,8 +65,9 @@ export default function EmployeeDashboard() {
     return () => clearInterval(timer);
   }, []);
 
-  // Today's attendance status calculation
-  const todayRecord = attendance.find(
+  // Today's attendance status calculation (foolproof against timezone differences)
+  const activeShift = attendance.find(a => a.checkIn && !a.checkOut);
+  const todayRecord = activeShift || attendance.find(
     (a) => new Date(a.date).toDateString() === new Date().toDateString()
   );
   const isClockedIn = todayRecord && todayRecord.checkIn && !todayRecord.checkOut;
@@ -360,14 +361,22 @@ export default function EmployeeDashboard() {
                   {!isClockedIn ? (
                     <>
                       <button
-                        onClick={() => handleCheckIn(false)}
-                        className="py-2.5 px-4 rounded-xl text-xs font-semibold text-white bg-green-600 hover:bg-green-700 transition"
+                        disabled={profileSubmitting}
+                        onClick={() => {
+                          setProfileSubmitting(true);
+                          handleCheckIn(false).finally(() => setProfileSubmitting(false));
+                        }}
+                        className="py-2.5 px-4 rounded-xl text-xs font-semibold text-white bg-green-600 hover:bg-green-700 transition disabled:opacity-50"
                       >
                         Clock In Onsite
                       </button>
                       <button
-                        onClick={() => handleCheckIn(true)}
-                        className="py-2.5 px-4 rounded-xl text-xs font-semibold text-white bg-brand-600 hover:bg-brand-700 transition"
+                        disabled={profileSubmitting}
+                        onClick={() => {
+                          setProfileSubmitting(true);
+                          handleCheckIn(true).finally(() => setProfileSubmitting(false));
+                        }}
+                        className="py-2.5 px-4 rounded-xl text-xs font-semibold text-white bg-brand-600 hover:bg-brand-700 transition disabled:opacity-50"
                       >
                         Clock In Remote
                       </button>
