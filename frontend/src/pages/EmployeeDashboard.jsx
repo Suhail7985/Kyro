@@ -341,17 +341,17 @@ export default function EmployeeDashboard() {
           {/* Main Action widget */}
           <div className="grid md:grid-cols-[1.5fr_2.5fr] gap-6 items-start">
             <div className="card p-6 text-center space-y-4">
-              <h3 className="font-bold text-slate-800 text-sm">Attendance Desk console</h3>
-              <p className="text-xs text-slate-500">
-                Log onsite or remote work hours daily. AI flags will automatically track anomalies.
+              <h3 className="font-bold text-slate-800 text-base">Daily Attendance</h3>
+              <p className="text-xs text-slate-500 leading-relaxed">
+                Start your workday by clicking a button below. Select <b>Onsite</b> if you are at the office, or <b>Remote</b> if you are working from home.
               </p>
               
-              <div className="p-4 bg-slate-50 rounded-2xl border flex flex-col items-center">
-                <span className="text-slate-400 text-[10px] uppercase font-bold tracking-wider">Shift Status</span>
-                <span className={`text-sm font-semibold mt-1 capitalize px-3 py-1 rounded-full ${
-                  isClockedIn ? 'bg-emerald-100 text-emerald-800' : isClockedOut ? 'bg-slate-100 text-slate-800' : 'bg-amber-100 text-amber-800'
+              <div className="p-4 bg-slate-50 rounded-2xl border flex flex-col items-center gap-2 mt-2">
+                <span className="text-slate-500 text-[11px] uppercase font-bold tracking-widest">Current Status</span>
+                <span className={`text-sm font-bold mt-1 px-4 py-1.5 rounded-full ${
+                  isClockedIn ? 'bg-emerald-100 text-emerald-800 shadow-sm' : isClockedOut ? 'bg-slate-200 text-slate-700 shadow-sm' : 'bg-amber-100 text-amber-800 shadow-sm'
                 }`}>
-                  {isClockedIn ? 'In Progress' : isClockedOut ? 'Completed' : 'Not Clocked In'}
+                  {isClockedIn ? '🟢 Shift In Progress' : isClockedOut ? '✅ Shift Completed' : '⏸️ Not Clocked In'}
                 </span>
               </div>
 
