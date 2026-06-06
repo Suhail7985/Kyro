@@ -59,7 +59,7 @@ Resume: ${resumeText.slice(0, 6000)}
 Return JSON only: {"score":number,"matchedSkills":[],"missingSkills":[],"feedback":"string"}`;
 
   try {
-    const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
+    const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`;
     const res = await fetch(url, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },

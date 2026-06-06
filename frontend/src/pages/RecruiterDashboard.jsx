@@ -394,7 +394,7 @@ export default function RecruiterDashboard() {
                 {questions.map((q, idx) => (
                   <div key={idx} className="rounded-2xl border bg-slate-50 p-3 text-sm text-slate-700">
                     <span className="font-semibold block text-brand-600 mb-1">Question {idx + 1}</span>
-                    {q}
+                    {typeof q === 'object' ? (q.question || q.text || JSON.stringify(q)) : q}
                   </div>
                 ))}
               </div>
