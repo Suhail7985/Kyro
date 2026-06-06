@@ -139,12 +139,13 @@ async function uploadInterviewVideo(req, res) {
         const User = require('../models/User');
         const recruiterUser = await User.findById(job.createdBy);
         if (recruiterUser) {
-          await sendEmail({
+          // Fire and forget the email so it doesn't block the video upload response
+          sendEmail({
             to: recruiterUser.email,
             subject: `Video Interview Complete - ${application.extractedName || 'Applicant'}`,
             text: `Hello ${recruiterUser.name},\n\nCandidate ${application.extractedName || 'Applicant'} has completed all video responses for the job: "${job.title}".\n\nPlease log in to the Recruiter Dashboard to review their transcripts, confidence scores, and play their video responses.\n\nBest regards,\nKyro HR Platform`,
             html: `<p>Hello <b>${recruiterUser.name}</b>,</p><p>Candidate <b>${application.extractedName || 'Applicant'}</b> has completed all video responses for the job: "<b>${job.title}</b>".</p><p>Please log in to the <a href="${process.env.FRONTEND_URL || 'http://localhost:5173'}/login">Recruiter Dashboard</a> to review their transcripts, confidence scores, and play their video responses.</p><br><p>Best regards,<br>Kyro HR Platform</p>`
-          });
+          }).catch(err => console.error('Failed to notify recruiter in background:', err.message));
         }
       } catch (mailErr) {
         console.error('Failed to notify recruiter of finished video interview:', mailErr.message);
