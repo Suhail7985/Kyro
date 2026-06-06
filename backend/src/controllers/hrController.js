@@ -78,11 +78,17 @@ async function checkIn(req, res) {
         aiFlag,
         locationMethod,
         locationVerified,
-        checkInLocation: { lat, lng }
+        ...(lat && lng ? { checkInLocation: { lat, lng } } : {})
       });
     } else if (!record.checkIn) {
       record.checkIn = now;
-      record.status = isLate ? 'late' : record.status;
+      record.status = isLate ? 'late' : remote ? 'remote' : record.status;
+      record.aiFlag = aiFlag;
+      record.locationMethod = locationMethod;
+      record.locationVerified = locationVerified;
+      if (lat && lng) {
+        record.checkInLocation = { lat, lng };
+      }
       await record.save();
     } else {
       return res.status(400).json({ message: 'Already checked in today' });
