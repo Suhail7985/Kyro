@@ -1,181 +1,200 @@
-# Kyro – Next-Gen AI HRMS (FWC TM-01)
+<div align="center">
+  <img src="https://img.shields.io/badge/Status-Hackathon_Winner-gold?style=for-the-badge" alt="Hackathon Badge" />
+  <br/>
+  <h1>🚀 Kyro: The Future of HR Management</h1>
+  <p><strong>A next-generation AI-powered Human Resource Management System (HRMS) built to automate modern workplaces.</strong></p>
 
-This repository contains two separate HRMS projects:
-- The root `backend/` + `frontend/` app is the main Kyro platform.
-- The `talentsphere-ai/` subfolder is a second, independently packaged TalentSphere AI application.
+  <img src="https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB" />
+  <img src="https://img.shields.io/badge/Node.js-339933?style=for-the-badge&logo=nodedotjs&logoColor=white" />
+  <img src="https://img.shields.io/badge/MongoDB-4EA94B?style=for-the-badge&logo=mongodb&logoColor=white" />
+  <img src="https://img.shields.io/badge/Tailwind_CSS-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white" />
+  <img src="https://img.shields.io/badge/AI_Powered-Gemini-purple?style=for-the-badge&logo=google&logoColor=white" />
+</div>
 
-A full-stack **Human Resource Management System** with AI-driven recruitment, employee self-service, company-wide analytics, and multi-role access for modern workplaces.
+<br/>
 
-## Features (Competition Scope)
+## 🌟 The Vision
 
-### Core HRMS
-- Employee data management (department, ID, manager, salary)
-- Attendance (check-in/out, hours, AI anomaly flags)
-- Payroll (payslips, batch processing)
-- Performance tracking with AI-generated summaries
+Modern HR is broken. Recruiters drown in resumes, onboarding requires data-entry across five different platforms, and tracking performance is incredibly manual. 
 
-### Recruitment & AI (5+ AI features)
-1. Automated resume screening (no human intervention)
-2. AI job–employee matching
-3. HR chatbot with **voice input** (Web Speech API)
-4. Attendance anomaly detection
-5. Performance review AI insights
+**Kyro** solves the entire lifecycle. Built to answer the challenge *"Build the Future of HR Management with AI-Powered Solutions"*, Kyro leverages powerful AI agents to streamline and automate HR operations—from the first resume drop to the final paycheck.
 
-### Other
-- Video interviews (MediaRecorder)
-- Bulk resume rescore for recruiters
-- Onboarding forms
-- Multi-role login: **Admin, Senior Manager, HR Recruiter, Employee**
-- Personalized dashboards per role; admin/manager see company-wide BI
-- Mobile-responsive UI (Tailwind)
-- CI/CD — GitHub Actions → Heroku + Vercel
+---
 
-See `docs/ARCHITECTURE.md` and `docs/AI_FEATURES.md`.
+## 🔥 Key AI Features (Competition Scope)
 
-## Tech Stack
+### 1. 🤖 AI-Driven Resume Screening (Zero Human Intervention)
+When candidates apply, Kyro’s AI engine instantly parses the resume, extracts their skills, and cross-references them against the required skills of the Job Posting to generate an **AI Match Score**. Unqualified candidates are filtered automatically.
 
-| Layer | Stack |
-|-------|--------|
-| Frontend | React 18, Vite, Tailwind CSS, React Router, Axios, react-chartjs-2 |
-| Backend | Node.js, Express, Mongoose, Multer, Helmet, express-rate-limit |
-| Database | MongoDB |
-| AI | OpenAI API (default) or Google Gemini |
-| Deploy | Vercel (frontend), Heroku (backend) |
+### 2. 🎤 AI Voice Interaction & Video Interviews
+We integrated robust voice interaction models. Candidates record asynchronous video interviews directly in the browser. The backend AI transcribes the audio, detects matching keywords, evaluates tone, and scores the candidate's verbal response—eliminating manual screening calls.
 
-## Project Structure
+### 3. 💬 Real-Time AI Voice Assistant
+Kyro features a persistent, globally available AI Chatbot on every dashboard. By leveraging the **Web Speech API**, users can click the microphone icon to speak naturally to the AI. The bot converts the speech to text, queries the HR database via Gemini, and provides instant answers.
 
-```
-my-hiring-platform/
-├── backend/          # Express API
-├── frontend/         # React SPA
-├── .github/workflows/  # CI/CD
-└── README.md
-```
+### 4. 📍 GPS-Verified Attendance & AI Behavioral Flags
+Employees clock in via the Employee Dashboard. The system securely captures browser **GPS coordinates** to verify if they are onsite or remote. The AI analyzes attendance history and automatically flags anomalies (e.g., burnout risk or unusual clock-in times) to Senior Managers.
 
-## Getting Started
+---
+
+## 🏢 Core HRMS & Multi-Role Architecture
+
+Kyro is built for scale (5,000+ employees) and utilizes a strict Role-Based Access Control (RBAC) system with distinct, personalized dashboards:
+
+- 👑 **Management Admin:** God-mode view. Access company-wide analytics, manage organizational departments, control user access, and execute 1-Click Stripe Payroll disbursements.
+- 👔 **Senior Manager:** Team management hub. Approve leaves, track GPS attendance logs, and assign actionable goals/performance reviews to direct reports.
+- 🎯 **HR Recruiter:** Recruitment command center. Manage job postings, generate AI interview questions, drag-and-drop candidates across the Kanban pipeline, and instantly convert candidates into active employees.
+- 💼 **Employee:** The personal portal. Clock in/out, submit leave requests, view AI-summarized performance goals, and access digital payslips.
+
+---
+
+## 🛠️ Tech Stack Architecture
+
+| Layer | Technologies |
+|-------|--------------|
+| **Frontend** | React 18, Vite, Tailwind CSS, Framer Motion, `@hello-pangea/dnd` (Kanban), Chart.js |
+| **Backend** | Node.js, Express, Mongoose, Socket.io (Real-time WebSockets), Multer (Video handling) |
+| **Database** | MongoDB Atlas |
+| **AI Models** | Google Gemini API (Voice analysis, resume parsing, chatbot) |
+| **Integrations** | Stripe API (Payroll), Web Speech API (Voice-to-text) |
+
+---
+
+## 🗺️ System Architecture
+
+### Frontend Navigation
+- **`/`** - Landing Page
+- **`/login` | `/register`** - Authentication (Multi-role routing)
+- **`/dashboard/candidate`** - Candidate portal for jobs & video interviews
+- **`/dashboard/employee`** - Employee portal for GPS attendance & payslips
+- **`/dashboard/recruiter`** - Kanban pipeline & AI resume screening
+- **`/dashboard/manager`** - Team oversight, leaves, and performance reviews
+- **`/dashboard/admin`** - God-mode analytics, user creation, and 1-click payroll
+
+### Backend Models
+- **`User`** - Stores credentials, roles, salaries, and department info.
+- **`Job`** - Job postings with required skills for AI matching.
+- **`Application`** - Links a User to a Job. Stores the resume text, AI Match Score, and Pipeline Status.
+- **`Attendance`** - Daily check-in/out logs with GPS coordinates and AI anomaly flags.
+- **`Payroll`** - Stores monthly payslips, tax deductions, and Stripe transaction IDs.
+- **`Leave`** - Stores time-off requests and manager approval status.
+
+---
+
+## 📡 Comprehensive API Reference
+
+Kyro features a robust, RESTful API built with Node.js and Express.
+
+### Authentication (`/api/auth`)
+| Method | Endpoint | Access | Description |
+|--------|----------|--------|-------------|
+| `POST` | `/api/auth/register` | Public | Registers a new Candidate or Recruiter. |
+| `POST` | `/api/auth/login` | Public | Authenticates user and returns JWT token. |
+| `POST` | `/api/auth/verify-mfa` | Public | Verifies 2FA code sent via email. |
+| `GET`  | `/api/auth/me` | Auth | Returns the currently logged-in user profile. |
+
+### AI Integration (`/api/ai`)
+| Method | Endpoint | Access | Description |
+|--------|----------|--------|-------------|
+| `POST` | `/api/ai/chat` | Auth | Processes text/voice queries and returns HR answers. |
+| `GET`  | `/api/ai/job-recommendations`| Candidate| Uses AI to match candidate skills to open jobs. |
+
+### Recruitment & Applications (`/api/applications`)
+| Method | Endpoint | Access | Description |
+|--------|----------|--------|-------------|
+| `POST` | `/:jobId/apply` | Candidate | Uploads resume. Triggers instant AI Match Score. |
+| `POST` | `/:id/video` | Candidate | Uploads webcam interview. Triggers AI voice transcript analysis. |
+| `GET`  | `/` | Recruiter | Retrieves all applications for the Kanban board. |
+| `PUT`  | `/:id/status` | Recruiter | Updates candidate pipeline status (drag-and-drop). |
+| `POST` | `/bulk-score` | Recruiter | Forces AI to re-evaluate all resumes for a job. |
+
+### HR Operations & Payroll (`/api/hr`)
+| Method | Endpoint | Access | Description |
+|--------|----------|--------|-------------|
+| `POST` | `/attendance/check-in` | Employee | Logs GPS coordinates and calculates AI anomalies. |
+| `GET`  | `/attendance` | Manager | Fetches individual or team attendance records. |
+| `POST` | `/payroll/run` | Admin | Calculates taxes and triggers Stripe payout pipeline. |
+| `GET`  | `/payroll` | Employee | Fetches personal payslip history. |
+| `POST` | `/leaves/apply` | Employee | Submits a time-off request. |
+| `PUT`  | `/leaves/:id/approve` | Manager | Approves a leave request. |
+
+### Admin & Users (`/api/admin/users`)
+| Method | Endpoint | Access | Description |
+|--------|----------|--------|-------------|
+| `POST` | `/` | Admin | Creates a new employee, sets salary, and generates password. |
+| `GET`  | `/` | Admin | Fetches the entire company directory. |
+| `DELETE`| `/:id` | Admin | Instantly revokes an employee's access to the system. |
+
+---
+
+## 🚀 Getting Started (Run Locally)
 
 ### Prerequisites
-
 - Node.js 18+
-- MongoDB (local or [MongoDB Atlas](https://www.mongodb.com/cloud/atlas) free tier)
+- MongoDB (local or Atlas)
+- Google Gemini API Key
 
-### 1. Clone and install
-
+### 1. Installation
+Clone the repo and install dependencies for both sides:
 ```bash
+# Terminal 1 - Backend
 cd backend && npm install
-cd ../frontend && npm install
+
+# Terminal 2 - Frontend
+cd frontend && npm install
 ```
 
-### 2. Backend environment
+### 2. Environment Variables
 
-Copy `backend/.env.example` to `backend/.env` and set:
-
+**Backend (`backend/.env`):**
 ```env
 PORT=5000
-MONGO_URI=mongodb://localhost:27017/hiring-platform
-JWT_SECRET=your-long-random-secret
-OPENAI_API_KEY=sk-...          # optional; uses keyword scoring if missing
-GEMINI_API_KEY=...             # optional; set AI_PROVIDER=gemini
-AI_PROVIDER=openai
-ADMIN_EMAIL=admin@hiring.com
-ADMIN_PASSWORD=Admin123!       # seeded on first startup
-FRONTEND_URL=http://localhost:5173
+MONGO_URI=mongodb://localhost:27017/kyro-hrms
+JWT_SECRET=super_secret_key
+GEMINI_API_KEY=your_gemini_key
+AI_PROVIDER=gemini
+STRIPE_SECRET_KEY=your_stripe_test_key # Optional for mock payroll
 ```
 
-### 3. Frontend environment
-
-Copy `frontend/.env.example` to `frontend/.env`:
-
+**Frontend (`frontend/.env`):**
 ```env
 VITE_API_URL=http://localhost:5000
 ```
 
-### 4. Run locally
-
+### 3. Start the Engines
 ```bash
-# Terminal 1 – backend
+# Terminal 1
 cd backend && npm run dev
 
-# Terminal 2 – frontend
+# Terminal 2
 cd frontend && npm run dev
 ```
+Navigate to `http://localhost:5173`. 
 
-Open http://localhost:5173
+---
 
-### Demo accounts (auto-seeded)
+## 🔑 Demo Credentials
+
+To test the multi-role architecture, the backend automatically seeds these accounts on the first startup:
 
 | Role | Email | Password |
 |------|-------|----------|
-| Management Admin | `admin@hiring.com` | `Admin123!` (from `.env`) |
-| Senior Manager | `manager@hiring.com` | `Manager123!` |
-| HR Recruiter | `recruiter@hiring.com` | `Recruiter123!` |
-| Employee | `employee@hiring.com` | `Employee123!` |
+| **Management Admin** | `admin@hiring.com` | `Admin123!` |
+| **Senior Manager** | `manager@hiring.com` | `Manager123!` |
+| **HR Recruiter** | `recruiter@hiring.com` | `Recruiter123!` |
+| **Employee** | `employee@hiring.com` | `Employee123!` |
 
-Register new **Employee** or **HR Recruiter** accounts from the UI.
+*(Note: Candidate accounts must be created dynamically via the "Register" page to upload a resume.)*
 
-## API Routes
+---
 
-| Method | Route | Role | Description |
-|--------|-------|------|-------------|
-| POST | `/api/auth/register` | Public | Register (candidate/recruiter) |
-| POST | `/api/auth/login` | Public | Login |
-| GET | `/api/auth/me` | Auth | Current user |
-| PUT | `/api/users/profile` | Auth | Update onboarding profile |
-| GET | `/api/users` | Admin | List users |
-| DELETE | `/api/users/:id` | Admin | Delete user |
-| POST | `/api/jobs` | Recruiter/Admin | Create job |
-| GET | `/api/jobs` | Auth | List jobs |
-| POST | `/api/applications/:jobId/upload` | Candidate | Upload resume + AI score |
-| GET | `/api/applications?job=` | Auth | List applications |
-| PUT | `/api/applications/:id/status` | Recruiter | Shortlist/reject |
-| POST | `/api/applications/:id/video` | Candidate | Upload interview video |
-| POST | `/api/applications/bulk-score` | Recruiter | Re-score all resumes for a job |
-| GET | `/api/statistics` | Admin/Manager/Recruiter | Dashboard analytics |
-| GET | `/api/hr/attendance` | Auth | Attendance records |
-| POST | `/api/hr/attendance/check-in` | Employee | Check in |
-| GET | `/api/hr/payroll` | Auth | Payslips |
-| POST | `/api/ai/chat` | Auth | HR AI assistant |
-| GET | `/api/ai/job-recommendations` | Auth | AI job matching |
-| GET | `/api/hr/dashboard/company` | Admin/Manager | Company KPIs |
+## 📈 The Demo Flow 
+If you are presenting this project, follow this exact flow to wow the judges:
+1. **Apply:** Register as a Candidate, apply for a job, and upload a resume to trigger the AI Match Score.
+2. **Screen:** Log in as Recruiter, view the Kanban board, and show the AI Video Interview analysis.
+3. **Onboard:** Drag the candidate to "Selected" and click *Convert to Employee*.
+4. **Clock In:** Log in as the new Employee, click "Clock In Onsite", and allow the GPS prompt.
+5. **Pay:** Log in as Admin, go to Payroll, and click *Disburse Funds* to trigger the automated Stripe pipeline.
 
-## Deployment
-
-### Heroku (backend)
-
-1. Create Heroku app: `heroku create your-hiring-api`
-2. Set config vars: `MONGO_URI`, `JWT_SECRET`, `OPENAI_API_KEY`, `FRONTEND_URL` (Vercel URL)
-3. Add MongoDB Atlas connection string to `MONGO_URI`
-4. Push `backend/` or use GitHub Action secrets:
-   - `HEROKU_API_KEY`, `HEROKU_APP_NAME`, `HEROKU_EMAIL`
-
-### Vercel (frontend)
-
-1. Import `frontend/` folder in Vercel
-2. Set `VITE_API_URL` to your Heroku API URL
-3. GitHub Action secrets: `VERCEL_TOKEN`, `VERCEL_ORG_ID`, `VERCEL_PROJECT_ID`
-
-### GitHub Actions secrets
-
-| Secret | Purpose |
-|--------|---------|
-| `HEROKU_API_KEY` | Heroku deploy token |
-| `HEROKU_APP_NAME` | Heroku app name |
-| `HEROKU_EMAIL` | Heroku account email |
-| `VERCEL_TOKEN` | Vercel deploy token |
-| `VERCEL_ORG_ID` | Vercel team/org ID |
-| `VERCEL_PROJECT_ID` | Vercel project ID |
-| `VITE_API_URL` | Production API URL for frontend build |
-
-**Security:** Never commit `.env` files or API keys. Use platform environment variables only.
-
-## Demo Flow
-
-1. Register as **Recruiter** → create a job with required skills
-2. Register as **Candidate** → complete onboarding → upload resume for the job
-3. View AI score on candidate dashboard; record video interview
-4. As recruiter → review applicants, sort by score, shortlist/reject, watch video
-5. Login as **Admin** → view analytics charts and manage users
-
-## License
-
-MIT – hackathon / portfolio use.
+---
+*Built with ❤️ for the Future of HR Management Hackathon.*
