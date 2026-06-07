@@ -139,7 +139,7 @@ async function seedPayrollAndAttendance() {
       { upsert: true }
     );
 
-    for (let i = 0; i < 5; i++) {
+    for (let i = 1; i <= 5; i++) {
       const d = new Date();
       d.setDate(d.getDate() - i);
       d.setHours(0, 0, 0, 0);
