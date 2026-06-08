@@ -228,8 +228,57 @@ export default function Login() {
               <li>• AI-powered talent scoring</li>
               <li>• Interview question generation</li>
               <li>• Leave requests and payroll management</li>
-              <li>• Role-specific dashboards</li>
             </ul>
+          </div>
+          
+          <div className="rounded-3xl bg-white/10 p-6 overflow-y-auto max-h-[45vh] custom-scrollbar">
+            <p className="text-sm font-semibold text-white mb-3 flex items-center gap-2">
+              <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z" />
+              </svg>
+              Demo Credentials
+            </p>
+            <div className="space-y-4">
+              <div>
+                <p className="text-xs font-bold text-brand-200 uppercase tracking-wider mb-1">Management Admin</p>
+                <p className="text-sm text-white font-mono bg-black/20 p-2 rounded">
+                  admin@kyro.com<br/>
+                  <span className="text-brand-300">password123</span>
+                </p>
+              </div>
+              
+              <div>
+                <p className="text-xs font-bold text-brand-200 uppercase tracking-wider mb-1">Senior Manager</p>
+                <p className="text-sm text-white font-mono bg-black/20 p-2 rounded">
+                  manager@hiring.com<br/>
+                  <span className="text-brand-300">Manager123!</span>
+                </p>
+              </div>
+              
+              <div>
+                <p className="text-xs font-bold text-brand-200 uppercase tracking-wider mb-1">HR Recruiter</p>
+                <p className="text-sm text-white font-mono bg-black/20 p-2 rounded">
+                  recruiter@hiring.com<br/>
+                  <span className="text-brand-300">Recruiter123!</span>
+                </p>
+              </div>
+
+              <div>
+                <p className="text-xs font-bold text-brand-200 uppercase tracking-wider mb-1">Employee</p>
+                <p className="text-sm text-white font-mono bg-black/20 p-2 rounded">
+                  employee@hiring.com<br/>
+                  <span className="text-brand-300">Employee123!</span>
+                </p>
+              </div>
+
+              <div>
+                <p className="text-xs font-bold text-brand-200 uppercase tracking-wider mb-1">Candidate / User</p>
+                <p className="text-sm text-white font-mono bg-black/20 p-2 rounded">
+                  thedessertlab7985@gmail.com<br/>
+                  <span className="text-brand-300">Suhail95@</span>
+                </p>
+              </div>
+            </div>
           </div>
         </div>
       </div>
