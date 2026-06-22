@@ -144,7 +144,7 @@ async function attendanceInsights(req, res) {
 async function getPayroll(req, res) {
   try {
     const userId = req.query.userId || req.user._id;
-    if (userId !== req.user._id.toString() && !userHasRole(req.user, ['admin'])) {
+    if (userId.toString() !== req.user._id.toString() && !userHasRole(req.user, ['admin'])) {
       return res.status(403).json({ message: 'Not authorized' });
     }
     const records = await Payroll.find({ userId }).sort({ month: -1 }).limit(12);
@@ -302,7 +302,7 @@ async function runPayroll(req, res) {
 async function listPerformance(req, res) {
   try {
     const userId = req.query.userId || req.user._id;
-    if (userId !== req.user._id.toString() && !userHasRole(req.user, ['admin', 'senior_manager', 'hr_recruiter'])) {
+    if (userId.toString() !== req.user._id.toString() && !userHasRole(req.user, ['admin', 'senior_manager', 'hr_recruiter'])) {
       return res.status(403).json({ message: 'Not authorized' });
     }
     const reviews = await PerformanceReview.find({ userId })
